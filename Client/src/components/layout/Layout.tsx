@@ -11,7 +11,7 @@ const Layout: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <Sidebar isOpen={sidebarOpen} toggle={toggleSidebar} />
 
       <div className="flex-1 lg:ml-64">

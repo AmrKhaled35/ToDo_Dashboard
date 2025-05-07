@@ -17,22 +17,22 @@ const Categories: React.FC = () => {
     let color;
     switch (category) {
       case 'work':
-        color = 'text-blue-600 bg-blue-100';
+        color = 'text-blue-600 bg-blue-100 dark:bg-blue-800 dark:text-blue-200';
         break;
       case 'personal':
-        color = 'text-purple-600 bg-purple-100';
+        color = 'text-purple-600 bg-purple-100 dark:bg-purple-800 dark:text-purple-200';
         break;
       case 'shopping':
-        color = 'text-emerald-600 bg-emerald-100';
+        color = 'text-emerald-600 bg-emerald-100 dark:bg-emerald-800 dark:text-emerald-200';
         break;
       case 'health':
-        color = 'text-green-600 bg-green-100';
+        color = 'text-green-600 bg-green-100 dark:bg-green-800 dark:text-green-200';
         break;
       case 'finance':
-        color = 'text-amber-600 bg-amber-100';
+        color = 'text-amber-600 bg-amber-100 dark:bg-amber-800 dark:text-amber-200';
         break;
       default:
-        color = 'text-gray-600 bg-gray-100';
+        color = 'text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-300';
     }
 
     return (
@@ -64,26 +64,26 @@ const Categories: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-bold text-gray-800">Categories</h2>
-
+    <div className="space-y-6 bg-gray-50 dark:bg-gray-900 p-4 min-h-screen transition-colors duration-300">
+      <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Categories</h2>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categories.map((category) => {
           const categoryTodos = getTodosByCategory(category);
           return (
-            <Card key={category} className="flex flex-col h-full">
+            <Card key={category} className="flex flex-col h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
               <CardHeader>
                 <div className="flex items-center space-x-3">
                   {getCategoryIcon(category)}
-                  <h3 className="text-lg font-semibold capitalize">{category}</h3>
+                  <h3 className="text-lg font-semibold capitalize text-gray-900 dark:text-gray-100">{category}</h3>
                 </div>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   {categoryTodos.length} tasks
                 </p>
               </CardHeader>
               <CardContent className="flex-grow">
                 {categoryTodos.length === 0 ? (
-                  <p className="text-sm text-gray-500 text-center py-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
                     No tasks in this category
                   </p>
                 ) : (
@@ -102,7 +102,7 @@ const Categories: React.FC = () => {
           );
         })}
       </div>
-
+  
       <TodoModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
@@ -111,6 +111,7 @@ const Categories: React.FC = () => {
       />
     </div>
   );
+  
 };
 
 export default Categories;

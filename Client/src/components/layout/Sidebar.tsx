@@ -1,15 +1,15 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  CheckSquare, 
-  Calendar, 
-  Tag, 
-  User, 
-  Settings, 
-  Menu, 
-  X 
+import {
+  LayoutDashboard,
+  CheckSquare,
+  Calendar,
+  Tag,
+  User,
+  Settings,
+  Menu,
+  X
 } from 'lucide-react';
+
 import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
@@ -18,7 +18,6 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
-  // const { user } = useApp();
   const { user } = useAuth();
   const navigationItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
@@ -29,7 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
     { path: '/settings', label: 'Settings', icon: <Settings size={20} /> },
   ];
 
-  const sidebarClasses = `fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 shadow-sm transform transition-transform duration-300 ease-in-out ${
+  const sidebarClasses = `fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-sm transform transition-transform duration-300 ease-in-out ${
     isOpen ? 'translate-x-0' : '-translate-x-full'
   } lg:translate-x-0`;
 
@@ -40,12 +39,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
   return (
     <>
       <div className={overlayClasses} onClick={toggle} />
-      
+
       <aside className={sidebarClasses}>
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
-          <h1 className="text-lg font-bold text-indigo-600">3la Ma Tofrag</h1>
+        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700">
+          <h1 className="text-lg font-bold dark:text-white text-indigo-600">3la Ma Tofrag</h1>
           <button
-            className="p-1 text-gray-500 rounded-md hover:bg-gray-100 lg:hidden"
+            className="p-1 text-gray-500 dark:text-gray-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 lg:hidden"
             onClick={toggle}
           >
             <X size={20} />
@@ -55,13 +54,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
         <div className="flex flex-col p-4">
           <div className="flex items-center space-x-3 mb-6">
             <img
-              src={user.avatar}
-              alt={user.name}
+              src={user?.avatar}
+              alt={user?.name}
               className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500"
             />
             <div>
-              <h2 className="font-medium">{user.name}</h2>
-              <p className="text-sm text-gray-500">{user.email}</p>
+              <h2 className="font-medium text-gray-900 dark:text-white">{user?.name}</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
             </div>
           </div>
 
@@ -73,8 +72,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
                 className={({ isActive }) =>
                   `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-indigo-50 text-indigo-700'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`
                 }
                 end
@@ -88,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
       </aside>
 
       <button
-        className="fixed bottom-4 right-4 p-3 bg-indigo-600 text-white rounded-full shadow-lg lg:hidden z-30"
+        className="fixed bottom-4 right-4 p-3 bg-indigo-600 text-white rounded-full shadow-lg lg:hidden z-30 hover:bg-indigo-700 dark:hover:bg-indigo-500"
         onClick={toggle}
       >
         <Menu size={24} />

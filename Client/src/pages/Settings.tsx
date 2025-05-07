@@ -1,7 +1,6 @@
 import React from 'react';
 import { Moon, Sun, Monitor, Eye, EyeOff, List, Calendar as CalendarIcon, Columns } from 'lucide-react';
 import Card, { CardHeader, CardContent } from '../components/ui/Card';
-import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { Category, Priority } from '../types';

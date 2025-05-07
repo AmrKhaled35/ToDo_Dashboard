@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Search, Bell, Menu, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';

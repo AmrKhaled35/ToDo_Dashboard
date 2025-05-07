@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
               <h2 className="text-lg font-bold text-gray-800">Task Progress</h2>
             </CardHeader>
             <CardContent>
-              <div className="mb-4">
+              <div className="mb-4 ">
                 <div className="flex justify-between mb-1">
                   <span className="text-sm font-medium">Completion Rate</span>
                   <span className="text-sm font-medium">{stats.completionRate.toFixed(0)}%</span>
