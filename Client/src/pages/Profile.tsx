@@ -59,13 +59,13 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-gray-900 text-white">
+    <div className="max-w-3xl mx-auto dark:bg-gray-900 dark:text-white">
       <h2 className="text-xl font-bold mb-6">Profile</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-1">
           <Card>
-            <CardContent className="p-6 flex flex-col items-center bg-gray-800 rounded-lg">
+            <CardContent className="p-6 flex flex-col items-center dark:bg-gray-800 rounded-lg">
               <div className="relative mb-4">
                 <img
                   src={previewAvatar}
