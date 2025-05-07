@@ -78,13 +78,13 @@ const Calendar: React.FC = () => {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white">Calendar</h2>
         <div className="flex items-center space-x-4">
-          <Button  className = "dark:text-white" variant="outline" size="sm" onClick={handlePreviousMonth} icon={<ChevronLeft size={16} />}>
+          <Button  className = "dark:text-white  dark:border-gray-700" variant="outline" size="sm" onClick={handlePreviousMonth} icon={<ChevronLeft size={16} />}>
             Previous
           </Button>
           <span className="text-lg font-medium text-gray-800 dark:text-gray-100">
             {currentMonthName} {currentYear}
           </span>
-          <Button className = "dark:text-white" variant="outline" size="sm" onClick={handleNextMonth} icon={<ChevronRight size={16} />}>
+          <Button className = "dark:text-white  dark:border-gray-700" variant="outline" size="sm" onClick={handleNextMonth} icon={<ChevronRight size={16} />}>
             Next
           </Button>
         </div>
