@@ -156,7 +156,7 @@ const TodoList: React.FC<TodoListProps> = ({
         </div>
       ) : (
         <div className="space-y-3">
-          {filteredTodos.map((todo) => (
+          {todos.map((todo) => (
             <TodoItem key={todo.id} todo={todo} onEdit={handleEditTodo} />
           ))}
         </div>

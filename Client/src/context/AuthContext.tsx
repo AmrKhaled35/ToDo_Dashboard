@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name,
         email,
         password,
-        avatar: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70) + 1}`,
+        avatar: `${name?.charAt(0).toUpperCase()}`,
         preferences: {
           theme: 'system',
           showCompletedTasks: true,

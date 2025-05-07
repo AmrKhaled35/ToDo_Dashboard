@@ -21,7 +21,7 @@ interface AppContextType {
 
 const defaultUser: User = {
   id: '1',
-  name: 'User',
+  name: 'Amr',
   email: 'user@example.com',
   avatar: 'https://i.pravatar.cc/150?img=1',
   preferences: {

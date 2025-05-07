@@ -3,15 +3,17 @@ import { User, Mail, Calendar, Edit3 } from 'lucide-react';
 import Card, { CardHeader, CardContent } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
-import { useApp } from '../context/AppContext';
+// import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 
 const Profile: React.FC = () => {
-  const { user, updateUser } = useApp();
+  // const { user, updateUser } = useApp();
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [avatar, setAvatar] = useState(user.avatar);
-  const [previewAvatar, setPreviewAvatar] = useState(user.avatar);
+  const [name, setName] = useState(user?.name);
+  const [email, setEmail] = useState(user?.email);
+  // const [avatar, setAvatar] = useState(user?.avatar);
+  const [previewAvatar, setPreviewAvatar] = useState(user?.avatar);
 
   const avatarOptions = [
     'https://i.pravatar.cc/150?img=1',
@@ -35,9 +37,9 @@ const Profile: React.FC = () => {
   };
 
   const cancelEditing = () => {
-    setName(user.name);
-    setEmail(user.email);
-    setPreviewAvatar(user.avatar);
+    setName(user?.name);
+    setEmail(user?.email);
+    setPreviewAvatar(user?.avatar);
     setIsEditing(false);
   };
 
@@ -60,8 +62,8 @@ const Profile: React.FC = () => {
             <CardContent className="p-6 flex flex-col items-center">
               <div className="relative mb-4">
                 <img
-                  src={user.avatar}
-                  alt={user.name}
+                  src={user?.avatar}
+                  alt={user?.name}
                   className="w-32 h-32 rounded-full object-cover border-4 border-indigo-200"
                 />
                 <Button
@@ -73,8 +75,8 @@ const Profile: React.FC = () => {
                   <Edit3 size={16} />
                 </Button>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800">{user.name}</h3>
-              <p className="text-gray-500">{user.email}</p>
+              <h3 className="text-xl font-semibold text-gray-800">{user?.name}</h3>
+              <p className="text-gray-500">{user?.email}</p>
               <div className="w-full mt-6 space-y-3">
                 <div className="flex items-center text-gray-600">
                   <User size={18} className="mr-2" />
@@ -165,7 +167,7 @@ const Profile: React.FC = () => {
                       <User size={20} className="text-gray-400 mr-3" />
                       <div>
                         <p className="text-sm text-gray-500">Name</p>
-                        <p className="font-medium">{user.name}</p>
+                        <p className="font-medium">{user?.name}</p>
                       </div>
                     </div>
                   </div>
@@ -174,7 +176,7 @@ const Profile: React.FC = () => {
                       <Mail size={20} className="text-gray-400 mr-3" />
                       <div>
                         <p className="text-sm text-gray-500">Email</p>
-                        <p className="font-medium">{user.email}</p>
+                        <p className="font-medium">{user?.email}</p>
                       </div>
                     </div>
                   </div>
@@ -215,3 +217,8 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function updateUser(arg0: { name: string | undefined; email: string | undefined; avatar: string | undefined; }) {
+  throw new Error('Function not implemented.');
+}

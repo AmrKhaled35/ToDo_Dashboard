@@ -11,6 +11,7 @@ import {
   X 
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -18,8 +19,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
-  const { user } = useApp();
-
+  // const { user } = useApp();
+  const { user } = useAuth();
   const navigationItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { path: '/tasks', label: 'Tasks', icon: <CheckSquare size={20} /> },
