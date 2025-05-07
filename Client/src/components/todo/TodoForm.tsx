@@ -84,7 +84,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 dark:bg-gray-800 dark:text-white dark:border-gray-700">
       <Input
         label="Title"
         value={title}
@@ -93,17 +93,18 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
         error={titleError}
         fullWidth
         autoFocus
+        className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
       />
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
           Description
         </label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Task description (optional)"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-indigo-400 dark:focus:border-indigo-400"
           rows={3}
         />
       </div>
@@ -115,6 +116,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
           fullWidth
+          className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
         />
 
         <Select
@@ -123,6 +125,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
           onChange={(e) => setPriority(e.target.value as Priority)}
           options={priorityOptions}
           fullWidth
+          className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
         />
       </div>
 
@@ -132,10 +135,11 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
         onChange={(e) => setCategory(e.target.value as Category)}
         options={categoryOptions}
         fullWidth
+        className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
       />
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
           Tags
         </label>
         <div className="flex">
@@ -144,13 +148,13 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
             onChange={(e) => setTagInput(e.target.value)}
             onKeyDown={handleTagKeyDown}
             placeholder="Add a tag and press Enter"
-            className="flex-grow"
+            className="flex-grow dark:bg-gray-700 dark:text-white dark:border-gray-600"
           />
           <Button
             type="button"
             onClick={handleAddTag}
             variant="outline"
-            className="ml-2"
+            className="ml-2 dark:border-gray-600 dark:text-white"
           >
             Add
           </Button>
@@ -160,13 +164,13 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
             {tags.map((tag) => (
               <div
                 key={tag}
-                className="flex items-center bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-sm"
+                className="flex items-center bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-sm dark:bg-indigo-600 dark:text-indigo-200"
               >
                 #{tag}
                 <button
                   type="button"
                   onClick={() => handleRemoveTag(tag)}
-                  className="ml-1 text-indigo-600 hover:text-indigo-800"
+                  className="ml-1 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-500"
                 >
                   <X size={14} />
                 </button>
@@ -177,10 +181,10 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
       </div>
 
       <div className="flex justify-end space-x-3 pt-2">
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button type="button" variant="outline" onClick={onCancel} className="dark:border-gray-600 dark:text-white">
           Cancel
         </Button>
-        <Button type="submit" variant="primary">
+        <Button type="submit" variant="primary" className="dark:bg-indigo-600 dark:text-white">
           {todo ? 'Update Task' : 'Create Task'}
         </Button>
       </div>

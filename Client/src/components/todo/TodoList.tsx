@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, Search, Filter } from 'lucide-react';
 import { Todo, Category, Priority } from '../../types';
 import TodoItem from './TodoItem';
@@ -90,9 +90,9 @@ const TodoList: React.FC<TodoListProps> = ({
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 dark:bg-gray-900 dark:text-white">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-800">{title}</h2>
+        <h2 className="text-xl font-bold text-gray-800 dark:text-white">{title}</h2>
         <div className="flex space-x-2">
           <Button
             variant="outline"
@@ -124,7 +124,7 @@ const TodoList: React.FC<TodoListProps> = ({
               onChange={(e) => setSearchTerm(e.target.value)}
               fullWidth
               className="h-10"
-              icon={<Search size={16} className="text-gray-400" />}
+              icon={<Search size={16} className="text-gray-400 dark:text-gray-500" />}
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -151,8 +151,8 @@ const TodoList: React.FC<TodoListProps> = ({
       </div>
 
       {filteredTodos.length === 0 ? (
-        <div className="p-8 text-center bg-white rounded-lg border border-gray-200">
-          <p className="text-gray-500">No tasks found. Add a new task to get started!</p>
+        <div className="p-8 text-center bg-white rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+          <p className="text-gray-500 dark:text-gray-400">No tasks found. Add a new task to get started!</p>
         </div>
       ) : (
         <div className="space-y-3">

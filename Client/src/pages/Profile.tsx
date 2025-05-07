@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Mail, Calendar, Edit3 } from 'lucide-react';
 import Card, { CardHeader, CardContent } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
-// import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 
 const Profile: React.FC = () => {
-  // const { user, updateUser } = useApp();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth(); // Assuming `updateUser` is from context
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(user?.name);
-  const [email, setEmail] = useState(user?.email);
-  // const [avatar, setAvatar] = useState(user?.avatar);
-  const [previewAvatar, setPreviewAvatar] = useState(user?.avatar);
+  const [name, setName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [previewAvatar, setPreviewAvatar] = useState(user?.avatar || '');
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+      setEmail(user.email);
+      setPreviewAvatar(user.avatar);
+    }
+  }, [user]);
 
   const avatarOptions = [
     'https://i.pravatar.cc/150?img=1',
@@ -26,20 +31,21 @@ const Profile: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    updateUser({
-      name,
-      email,
-      avatar: previewAvatar,
-    });
-    
-    setIsEditing(false);
+
+    if (name && email) {
+      updateUser({
+        name,
+        email,
+        avatar: previewAvatar,
+      });
+      setIsEditing(false);
+    }
   };
 
   const cancelEditing = () => {
-    setName(user?.name);
-    setEmail(user?.email);
-    setPreviewAvatar(user?.avatar);
+    setName(user?.name || '');
+    setEmail(user?.email || '');
+    setPreviewAvatar(user?.avatar || '');
     setIsEditing(false);
   };
 
@@ -53,16 +59,16 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold text-gray-800 mb-6">Profile</h2>
+    <div className="max-w-3xl mx-auto bg-gray-900 text-white">
+      <h2 className="text-xl font-bold mb-6">Profile</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-1">
           <Card>
-            <CardContent className="p-6 flex flex-col items-center">
+            <CardContent className="p-6 flex flex-col items-center bg-gray-800 rounded-lg">
               <div className="relative mb-4">
                 <img
-                  src={user?.avatar}
+                  src={previewAvatar}
                   alt={user?.name}
                   className="w-32 h-32 rounded-full object-cover border-4 border-indigo-200"
                 />
@@ -75,14 +81,14 @@ const Profile: React.FC = () => {
                   <Edit3 size={16} />
                 </Button>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800">{user?.name}</h3>
-              <p className="text-gray-500">{user?.email}</p>
+              <h3 className="text-xl font-semibold">{user?.name}</h3>
+              <p className="text-gray-400">{user?.email}</p>
               <div className="w-full mt-6 space-y-3">
-                <div className="flex items-center text-gray-600">
+                <div className="flex items-center text-gray-400">
                   <User size={18} className="mr-2" />
                   <span>Member since {formatDate('2023-01-15')}</span>
                 </div>
-                <div className="flex items-center text-gray-600">
+                <div className="flex items-center text-gray-400">
                   <Calendar size={18} className="mr-2" />
                   <span>Last active: Today</span>
                 </div>
@@ -126,7 +132,7 @@ const Profile: React.FC = () => {
                   />
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
                       Avatar
                     </label>
                     <div className="flex flex-wrap gap-3 mt-1">
@@ -162,20 +168,20 @@ const Profile: React.FC = () => {
                 </form>
               ) : (
                 <div className="space-y-4">
-                  <div className="pb-4 border-b border-gray-100">
+                  <div className="pb-4 border-b border-gray-700">
                     <div className="flex">
                       <User size={20} className="text-gray-400 mr-3" />
                       <div>
-                        <p className="text-sm text-gray-500">Name</p>
+                        <p className="text-sm text-gray-400">Name</p>
                         <p className="font-medium">{user?.name}</p>
                       </div>
                     </div>
                   </div>
-                  <div className="pb-4 border-b border-gray-100">
+                  <div className="pb-4 border-b border-gray-700">
                     <div className="flex">
                       <Mail size={20} className="text-gray-400 mr-3" />
                       <div>
-                        <p className="text-sm text-gray-500">Email</p>
+                        <p className="text-sm text-gray-400">Email</p>
                         <p className="font-medium">{user?.email}</p>
                       </div>
                     </div>
@@ -185,26 +191,26 @@ const Profile: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="mt-6">
+          <Card className="mt-6 bg-gray-800">
             <CardHeader>
               <h3 className="text-lg font-semibold">Account Statistics</h3>
             </CardHeader>
             <CardContent>
               <div className="divide-y">
                 <div className="py-3 flex justify-between">
-                  <span className="text-gray-600">Completed Tasks</span>
+                  <span className="text-gray-400">Completed Tasks</span>
                   <span className="font-medium">24</span>
                 </div>
                 <div className="py-3 flex justify-between">
-                  <span className="text-gray-600">On Time Completion Rate</span>
+                  <span className="text-gray-400">On Time Completion Rate</span>
                   <span className="font-medium">92%</span>
                 </div>
                 <div className="py-3 flex justify-between">
-                  <span className="text-gray-600">Average Completion Time</span>
+                  <span className="text-gray-400">Average Completion Time</span>
                   <span className="font-medium">2.5 days</span>
                 </div>
                 <div className="py-3 flex justify-between">
-                  <span className="text-gray-600">Most Active Category</span>
+                  <span className="text-gray-400">Most Active Category</span>
                   <span className="font-medium">Work</span>
                 </div>
               </div>
@@ -217,8 +223,3 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function updateUser(arg0: { name: string | undefined; email: string | undefined; avatar: string | undefined; }) {
-  throw new Error('Function not implemented.');
-}
