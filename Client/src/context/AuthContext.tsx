@@ -1,9 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '../types';
-import { generateId } from '../utils/helpers';
 import toast from 'react-hot-toast';
-import { z } from 'zod';
 
 interface AuthContextType {
   user: User | null;
@@ -13,12 +11,6 @@ interface AuthContextType {
   logout: () => void;
   updateUser: (data: Partial<User>) => void;
 }
-
-const userSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -33,40 +25,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = (email: string, password: string) => {
+  const login = async (email: string, password: string) => {
     try {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find((u: User) => u.email === email && u.password === password);
+      const response = await fetch('http://omarawadsaber.pythonanywhere.com/api/token/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: email , password }), 
+      });
 
-      if (user) {
-        setUser(user);
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        toast.success('Welcome back!');
-        navigate('/');
-      } else {
-        toast.error('Invalid email or password');
-      }
-    } catch (error) {
-      toast.error('Login failed');
-    }
-  };
-
-  const signup = (name: string, email: string, password: string) => {
-    try {
-      const validation = userSchema.parse({ name, email, password });
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-
-      if (users.some((u: User) => u.email === email)) {
-        toast.error('Email already exists');
-        return;
+      if (!response.ok) {
+        throw new Error('Invalid credentials');
       }
 
-      const newUser: User = {
-        id: generateId(),
-        name,
+      const data = await response.json();
+      console.log('Login Response:', data);
+      localStorage.setItem('accessToken', data.access);
+      localStorage.setItem('refreshToken', data.refresh);
+      const currentUser: User = {
+        id: 'server',
+        name: email.split('@')[0],
         email,
-        password,
-        avatar: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70) + 1}`,
+        password: '',
+        avatar: `https://i.pravatar.cc/150?u=${email}`,
         preferences: {
           theme: 'system',
           showCompletedTasks: true,
@@ -76,40 +58,71 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         },
       };
 
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-      setUser(newUser);
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
-      toast.success('Account created successfully!');
+      setUser(currentUser);
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+      toast.success('Login successful!');
       navigate('/');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        error.errors.forEach((err) => toast.error(err.message));
-      } else {
-        toast.error('Signup failed');
-      }
+      toast.error('Login failed. Please check your email and password.');
     }
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const signup = async (name: string, email: string, password: string) => {
+    try {
+      const response = await fetch('http://omarawadsaber.pythonanywhere.com/api/users/register/', {
+        method: 'POST',
+        headers: {
+          Authorization: '',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: name,
+          email : email,
+          password : password,
+          password2: password,
+        }),
+      });
+  
+      const data = await response.json();
+      console.log('Signup Response:', data);
+      if (!response.ok) {
+        const errorMessage =
+          data?.email?.[0] ||
+          data?.username?.[0] ||
+          data?.password?.[0] ||
+          data?.password2?.[0] ||
+          data?.phone_number?.[0] ||
+          'Signup failed';
+        toast.error(errorMessage);
+        return;
+      }
+  
+      toast.success('Account created successfully! Please login.');
+      navigate('/login');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error('Signup failed. Please try again.');
+    }
+  };
+  
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     toast.success('Logged out successfully');
     navigate('/login');
   };
 
   const updateUser = (data: Partial<User>) => {
     if (!user) return;
-
     const updatedUser = { ...user, ...data };
     setUser(updatedUser);
     localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const updatedUsers = users.map((u: User) =>
-      u.id === user.id ? updatedUser : u
-    );
-    localStorage.setItem('users', JSON.stringify(updatedUsers));
     toast.success('Profile updated successfully');
   };
 

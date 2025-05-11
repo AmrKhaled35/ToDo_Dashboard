@@ -7,15 +7,17 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { UserPlus } from 'lucide-react';
 
-const signupSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const signupSchema = z
+  .object({
+    name: z.string().min(2, 'Name must be at least 2 characters'),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 const Signup: React.FC = () => {
   const { signup } = useAuth();
@@ -23,17 +25,21 @@ const Signup: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       signupSchema.parse({ name, email, password, confirmPassword });
-      signup(name, email, password);
+      setLoading(true);
+      await signup(name, email, password);
     } catch (error) {
       if (error instanceof z.ZodError) {
         error.errors.forEach((err) => toast.error(err.message));
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,8 +98,9 @@ const Signup: React.FC = () => {
               variant="primary"
               fullWidth
               icon={<UserPlus size={20} />}
+              disabled={loading}
             >
-              Create Account
+              {loading ? 'Creating...' : 'Create Account'}
             </Button>
           </form>
 

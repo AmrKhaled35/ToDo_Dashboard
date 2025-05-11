@@ -31,6 +31,7 @@ const defaultUser: User = {
     defaultCategory: 'personal',
     defaultPriority: 'medium',
   },
+  password: ''
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);

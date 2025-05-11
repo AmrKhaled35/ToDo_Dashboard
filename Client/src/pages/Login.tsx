@@ -8,7 +8,7 @@ import Button from '../components/ui/Button';
 import { LogIn } from 'lucide-react';
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
+  // email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
@@ -16,17 +16,21 @@ const Login: React.FC = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       loginSchema.parse({ email, password });
-      login(email, password);
+      setLoading(true);
+      await login(email, password);
     } catch (error) {
       if (error instanceof z.ZodError) {
         error.errors.forEach((err) => toast.error(err.message));
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,7 +50,7 @@ const Login: React.FC = () => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <Input
               label="Email"
-              type="email"
+              type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
@@ -67,8 +71,9 @@ const Login: React.FC = () => {
               variant="primary"
               fullWidth
               icon={<LogIn size={20} />}
+              disabled={loading}
             >
-              Sign in
+              {loading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
 

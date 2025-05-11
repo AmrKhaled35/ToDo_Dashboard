@@ -37,6 +37,7 @@ const Calendar: React.FC = () => {
     return todosByDate[dateString] || [];
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleAddTodo = (date: Date) => {
     setCurrentTodo(undefined);
     setIsModalOpen(true);
