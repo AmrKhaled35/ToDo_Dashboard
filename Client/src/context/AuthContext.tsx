@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('http://omarawadsaber.pythonanywhere.com/api/token/', {
+      const response = await fetch('https://omarawadsaber.pythonanywhere.com/api/token/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const signup = async (name: string, email: string, password: string) => {
     try {
-      const response = await fetch('http://omarawadsaber.pythonanywhere.com/api/users/register/', {
+      const response = await fetch('https://omarawadsaber.pythonanywhere.com/api/users/register/', {
         method: 'POST',
         headers: {
           Authorization: '',
