@@ -49,7 +49,7 @@ const Login: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <Input
-              label="Email"
+              label="Username"
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
