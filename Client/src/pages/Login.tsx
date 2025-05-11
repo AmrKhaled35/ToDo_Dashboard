@@ -53,7 +53,7 @@ const Login: React.FC = () => {
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder="Enter your Username"
               fullWidth
             />
 
