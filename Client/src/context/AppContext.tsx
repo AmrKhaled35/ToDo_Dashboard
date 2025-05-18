@@ -21,7 +21,7 @@ interface AppContextType {
   refreshTodos: () => Promise<void>;
 }
 
-const API_URL = 'http://omarawadsaber.pythonanywhere.com/api/tasks';
+const API_URL = 'https://omarawadsaber.pythonanywhere.com/api/tasks';
 
 const defaultUser: User = {
   id: '1',
