@@ -142,7 +142,7 @@ const Calendar: React.FC = () => {
                     <div
                       key={t.id}
                       className={`text-xs p-1 rounded truncate cursor-pointer ${
-                        t.completed
+                        t.isCompleted
                           ? 'bg-gray-100 text-gray-500 line-through dark:bg-gray-700 dark:text-gray-400'
                           : t.priority === 'high'
                           ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
@@ -174,12 +174,12 @@ const Calendar: React.FC = () => {
         </div>
       </div>
 
-      <TodoModal
+      {/* <TodoModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         todo={currentTodo}
         onSubmit={handleSubmit}
-      />
+      /> */}
     </div>
   );
 };
