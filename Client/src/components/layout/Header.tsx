@@ -21,6 +21,8 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         return 'Calendar';
       case '/categories':
         return 'Categories';
+      case '/ask-gpt':
+        return 'Ask GPT';
       case '/profile':
         return 'Profile';
       case '/settings':

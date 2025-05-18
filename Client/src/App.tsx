@@ -14,6 +14,7 @@ import Categories from './pages/Categories';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import { useAuth } from './context/AuthContext';
+// import AskGpt from './pages/AskGpt';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -37,6 +38,7 @@ const AppContent: React.FC = () => {
             <Route path="tasks" element={<Tasks />} />
             <Route path="calendar" element={<Calendar />} />
             <Route path="categories" element={<Categories />} />
+            {/* <Route path="ask-gpt" element={<AskGpt />} /> */}
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
           </Route>

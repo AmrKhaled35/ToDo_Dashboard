@@ -273,31 +273,42 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const toggleComplete = async (id: string) => {
     const todo = todos.find(t => t.id === id);
     if (!todo) return;
-
+    console.log(todo);
     setLoading(true);
     try {
       const token = getToken();
       if (!token) throw new Error('No access token found');
-
+  
+      const updatedData = {
+        title: todo.title,
+        isCompleted: !todo.isCompleted,
+        description: todo.description,
+        due_date: todo.due_date,
+        category: todo.category,
+        Tags: todo.Tags || "",
+        user: todo.user,
+        priority: todo.priority
+      };
+  
       const response = await fetch(`${API_URL}/${id}/`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ completed: !todo.completed }),
+        body: JSON.stringify(updatedData),
       });
-
+  
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
-
+  
       const updatedTodo = await response.json();
-      // Ensure the updated todo has a tags array
       const processedTodo = {
         ...updatedTodo,
         tags: updatedTodo.tags || []
       };
+  
       setTodos(prev => prev.map(t => t.id === id ? processedTodo : t));
       setError(null);
     } catch (error) {
@@ -307,6 +318,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setLoading(false);
     }
   };
+  
 
   const updateUser = (updatedFields: Partial<User>) => {
     setUser(prev => ({ ...prev, ...updatedFields }));

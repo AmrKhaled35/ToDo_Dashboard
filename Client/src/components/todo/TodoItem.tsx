@@ -41,7 +41,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onEdit }) => {
           className="mt-1 mr-3 text-gray-400 hover:text-indigo-600 transition-colors dark:text-gray-500 dark:hover:text-indigo-400"
           onClick={handleToggle}
         >
-          {todo.completed ? (
+          {todo.isCompleted ? (
             <CheckCircle className="text-green-500" size={20} />
           ) : (
             <Circle size={20} />
@@ -52,7 +52,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onEdit }) => {
           <div className="flex items-start justify-between">
             <h3
               className={`text-base font-medium break-words ${
-                todo.completed ? 'line-through text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white'
+                todo.isCompleted ? 'line-through text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white'
               }`}
             >
               {todo.title}
@@ -79,7 +79,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onEdit }) => {
           {todo.description && (
             <p
               className={`mt-1 text-sm ${
-                todo.completed ? 'text-gray-400 dark:text-gray-500' : 'text-gray-500 dark:text-gray-400'
+                todo.isCompleted ? 'text-gray-400 dark:text-gray-500' : 'text-gray-500 dark:text-gray-400'
               }`}
             >
               {todo.description}

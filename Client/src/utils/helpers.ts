@@ -92,17 +92,17 @@ export const getPriorityColor = (priority: Priority): string => {
 };
 export const getCategoryColor = (category: Category): string => {
   switch (category) {
-    case 'work':
+    case 'Work':
       return 'text-blue-600 bg-blue-100 border-blue-200';
-    case 'personal':
+    case 'Personal':
       return 'text-purple-600 bg-purple-100 border-purple-200';
-    case 'shopping':
+    case 'Shopping':
       return 'text-emerald-600 bg-emerald-100 border-emerald-200';
-    case 'health':
+    case 'Health':
       return 'text-green-600 bg-green-100 border-green-200';
-    case 'finance':
+    case 'Finance':
       return 'text-amber-600 bg-amber-100 border-amber-200';
-    case 'other':
+    case 'Other':
       return 'text-gray-600 bg-gray-100 border-gray-200';
     default:
       return 'text-gray-600 bg-gray-100 border-gray-200';
