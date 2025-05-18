@@ -16,13 +16,16 @@ import Settings from './pages/Settings';
 import { useAuth } from './context/AuthContext';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 };
 
+
 const AppContent: React.FC = () => {
   const { isAuthenticated } = useAuth();
-
   return (
     <ThemeProvider>
       <AppProvider>
