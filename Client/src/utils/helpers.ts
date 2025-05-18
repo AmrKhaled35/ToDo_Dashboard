@@ -112,9 +112,9 @@ export const groupTodosByDate = (todos: Todo[]) => {
   const grouped: Record<string, Todo[]> = {};
   
   todos.forEach((todo) => {
-    if (!todo.dueDate) return;
+    if (!todo.due_date) return;
     
-    const dateKey = todo.dueDate.split('T')[0];
+    const dateKey = todo.due_date.split('T')[0];
     
     if (!grouped[dateKey]) {
       grouped[dateKey] = [];

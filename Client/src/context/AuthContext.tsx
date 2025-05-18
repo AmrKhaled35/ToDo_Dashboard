@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '../types';
 import toast from 'react-hot-toast';
-
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
@@ -17,14 +16,24 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
+  const clearAppData = () => {
+    window.dispatchEvent(new Event('authStateChanged'));
+  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
+    const accessToken = localStorage.getItem('accessToken');
+    
+    if (storedUser && accessToken) {
       setUser(JSON.parse(storedUser));
+    } else {
+      if (storedUser || accessToken) {
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+      }
     }
   }, []);
-
   const login = async (email: string, password: string) => {
     try {
       const response = await fetch('https://omarawadsaber.pythonanywhere.com/api/token/', {
@@ -32,7 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username: email , password }), 
+        body: JSON.stringify({ username: email, password }), 
       });
 
       if (!response.ok) {
@@ -41,8 +50,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const data = await response.json();
       console.log('Login Response:', data);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('currentUser');
       localStorage.setItem('accessToken', data.access);
       localStorage.setItem('refreshToken', data.refresh);
+      
       const currentUser: User = {
         id: 'server',
         name: email.split('@')[0],
@@ -53,14 +66,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           theme: 'system',
           showCompletedTasks: true,
           defaultView: 'list',
-          defaultCategory: 'personal',
+          defaultCategory: 'Personal',
           defaultPriority: 'medium',
         },
       };
 
       setUser(currentUser);
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
+      clearAppData();
+      
       toast.success('Login successful!');
       navigate('/');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -75,13 +89,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await fetch('https://omarawadsaber.pythonanywhere.com/api/users/register/', {
         method: 'POST',
         headers: {
-          Authorization: '',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           username: name,
-          email : email,
-          password : password,
+          email: email,
+          password: password,
           password2: password,
         }),
       });
@@ -108,12 +121,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
   
-
   const logout = () => {
     setUser(null);
     localStorage.removeItem('currentUser');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    clearAppData();
+    
     toast.success('Logged out successfully');
     navigate('/login');
   };

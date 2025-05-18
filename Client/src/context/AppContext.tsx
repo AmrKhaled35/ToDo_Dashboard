@@ -1,14 +1,15 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Todo, User, Category, Priority } from '../types';
-import { generateId } from '../utils/helpers';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { Todo, User, Category, Priority, AppState } from '../types';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 interface AppContextType {
   todos: Todo[];
   user: User;
-  addTodo: (todo: Omit<Todo, 'id' | 'createdAt'>) => void;
-  updateTodo: (id: string, todo: Partial<Todo>) => void;
-  deleteTodo: (id: string) => void;
-  toggleComplete: (id: string) => void;
+  appState: AppState;
+  addTodo: (todo: Omit<Todo, 'id' | 'createdAt'>) => Promise<void>;
+  updateTodo: (id: string, todo: Partial<Todo>) => Promise<void>;
+  deleteTodo: (id: string) => Promise<void>;
+  toggleComplete: (id: string) => Promise<void>;
   updateUser: (user: Partial<User>) => void;
   filterTodos: (filters: {
     search?: string;
@@ -17,7 +18,10 @@ interface AppContextType {
     completed?: boolean;
     tags?: string[];
   }) => Todo[];
+  refreshTodos: () => Promise<void>;
 }
+
+const API_URL = 'http://omarawadsaber.pythonanywhere.com/api/tasks';
 
 const defaultUser: User = {
   id: '1',
@@ -28,96 +32,252 @@ const defaultUser: User = {
     theme: 'system',
     showCompletedTasks: true,
     defaultView: 'list',
-    defaultCategory: 'personal',
+    defaultCategory: 'Personal',
     defaultPriority: 'medium',
   },
   password: ''
+};
+
+const defaultAppState: AppState = {
+  isLoading: false,
+  error: null
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [user, setUser] = useState<User>(defaultUser);
+  const [user, setUser] = useLocalStorage<User>('user', defaultUser);
+  const [appState, setAppState] = useState<AppState>(defaultAppState);
 
-  useEffect(() => {
-    const storedTodos = localStorage.getItem('todos');
-    const storedUser = localStorage.getItem('user');
+  const setLoading = (isLoading: boolean) => {
+    setAppState(prev => ({ ...prev, isLoading }));
+  };
 
-    if (storedTodos) {
-      setTodos(JSON.parse(storedTodos));
-    } else {
-      const sampleTodos = [
-        {
-          id: generateId(),
-          title: 'Welcome to Task Master',
-          description: 'This is your first task! Try completing it.',
-          completed: false,
-          createdAt: new Date().toISOString(),
-          dueDate: new Date(Date.now() + 86400000).toISOString(),
-          priority: 'medium' as Priority,
-          category: 'personal' as Category,
-          tags: ['welcome', 'getting-started'],
-        },
-        {
-          id: generateId(),
-          title: 'Create your first task',
-          description: 'Click the + button to add a new task',
-          completed: false,
-          createdAt: new Date().toISOString(),
-          dueDate: new Date(Date.now() + 172800000).toISOString(),
-          priority: 'high' as Priority,
-          category: 'work' as Category,
-          tags: ['tutorial'],
-        },
-      ];
-      setTodos(sampleTodos);
-      localStorage.setItem('todos', JSON.stringify(sampleTodos));
-    }
+  const setError = (error: string | null) => {
+    setAppState(prev => ({ ...prev, error }));
+  };
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    } else {
-      localStorage.setItem('user', JSON.stringify(defaultUser));
+  const getToken = () => localStorage.getItem('accessToken');
+
+  const refreshTodos = useCallback(async () => {
+    setLoading(true);
+    try {
+      const token = getToken();
+      console.log(token);
+      if (!token) throw new Error('No access token found');
+
+      const response = await fetch(API_URL, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      const data = await response.json();
+      const processedData = data.map((todo: Todo) => ({
+        ...todo,
+        tags: todo.tags || []
+      }));
+      setTodos(processedData);
+      setError(null);
+    } catch (error) {
+      setError('Failed to load tasks. Please try again later.');
+      console.error('Error fetching todos:', error);
+    } finally {
+      setLoading(false);
     }
   }, []);
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
 
   useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(user));
-  }, [user]);
+    refreshTodos();
+  }, [refreshTodos]);
 
-  const addTodo = (todo: Omit<Todo, 'id' | 'createdAt'>) => {
-    const newTodo: Todo = {
-      ...todo,
-      id: generateId(),
-      createdAt: new Date().toISOString(),
-    };
-    setTodos([...todos, newTodo]);
+  const addTodo = async (todo: Omit<Todo, 'id' | 'createdAt'>) => {
+    setLoading(true);
+    try {
+      const token = getToken();
+      if (!token) throw new Error('No access token found');
+      let formattedDueDate = null;
+      if (todo.dueDate) {
+        try {
+          const date = new Date(todo.dueDate);
+          if (!isNaN(date.getTime())) {
+            formattedDueDate = date.toISOString();
+          }
+        } catch (e) {
+          console.error('Invalid date format:', e);
+        }
+      }
+      const body = {
+        title: todo.title,
+        description: todo.description || '',
+        due_date: formattedDueDate,
+        priority: todo.priority.toLowerCase(),
+        category: capitalizeFirstLetter(todo.category),
+        Tags: Array.isArray(todo.tags) ? todo.tags.join(' ') : ''
+      };
+
+      const response = await fetch(`${API_URL}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Backend response error:', errorData);
+        throw new Error(`Error: ${response.status}`);
+      }
+      const newTodo = await response.json();
+      const processedTodo = {
+        ...newTodo,
+        tags: newTodo.tags || []
+      };
+      setTodos(prev => [...prev, processedTodo]);
+      setError(null);
+    } catch (error) {
+      setError('Failed to add task. Please try again.');
+      console.error('Error adding todo:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateTodo = (id: string, updatedFields: Partial<Todo>) => {
-    setTodos(
-      todos.map((todo) => (todo.id === id ? { ...todo, ...updatedFields } : todo))
-    );
+  const capitalizeFirstLetter = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+
+  const updateTodo = async (id: string, updatedFields: Partial<Todo>) => {
+    setLoading(true);
+    try {
+      const token = getToken();
+      if (!token) throw new Error('No access token found');
+  
+      let formattedDueDate = null;
+      if (updatedFields.dueDate) {
+        try {
+          const date = new Date(updatedFields.dueDate);
+          if (!isNaN(date.getTime())) {
+            formattedDueDate = date.toISOString();
+          }
+        } catch (e) {
+          console.error('Invalid date format:', e);
+        }
+      }
+  
+      const body = {
+        ...(updatedFields.title !== undefined && { title: updatedFields.title }),
+        ...(updatedFields.description !== undefined && { description: updatedFields.description }),
+        ...(updatedFields.completed !== undefined && { completed: updatedFields.completed }),
+        ...(updatedFields.priority !== undefined && { priority: updatedFields.priority.toLowerCase() }),
+        ...(updatedFields.category !== undefined && { category: capitalizeFirstLetter(updatedFields.category) }),
+        ...(updatedFields.tags !== undefined && { Tags: updatedFields.tags.join(' ') }),
+        ...(formattedDueDate !== null && { due_date: formattedDueDate }),
+      };
+  
+      const response = await fetch(`${API_URL}/${id}/`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Backend response error:', errorData);
+        throw new Error(`Error: ${response.status}`);
+      }
+  
+      const updatedTodo = await response.json();
+      const processedTodo = {
+        ...updatedTodo,
+        tags: updatedTodo.tags || []
+      };
+  
+      setTodos(prev => prev.map(todo => todo.id === id ? processedTodo : todo));
+      setError(null);
+    } catch (error) {
+      setError('Failed to update task. Please try again.');
+      console.error('Error updating todo:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const deleteTodo = async (id: string) => {
+    setLoading(true);
+    try {
+      const token = getToken();
+      if (!token) throw new Error('No access token found');
+
+      const response = await fetch(`${API_URL}/${id}/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      setTodos(prev => prev.filter(todo => todo.id !== id));
+      setError(null);
+    } catch (error) {
+      setError('Failed to delete task. Please try again.');
+      console.error('Error deleting todo:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const deleteTodo = (id: string) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  };
+  const toggleComplete = async (id: string) => {
+    const todo = todos.find(t => t.id === id);
+    if (!todo) return;
 
-  const toggleComplete = (id: string) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+    setLoading(true);
+    try {
+      const token = getToken();
+      if (!token) throw new Error('No access token found');
+
+      const response = await fetch(`${API_URL}/${id}/`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ completed: !todo.completed }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const updatedTodo = await response.json();
+      // Ensure the updated todo has a tags array
+      const processedTodo = {
+        ...updatedTodo,
+        tags: updatedTodo.tags || []
+      };
+      setTodos(prev => prev.map(t => t.id === id ? processedTodo : t));
+      setError(null);
+    } catch (error) {
+      setError('Failed to update task status. Please try again.');
+      console.error('Error toggling todo completion:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateUser = (updatedFields: Partial<User>) => {
-    setUser((prevUser) => ({ ...prevUser, ...updatedFields }));
+    setUser(prev => ({ ...prev, ...updatedFields }));
   };
 
   const filterTodos = (filters: {
@@ -127,7 +287,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     completed?: boolean;
     tags?: string[];
   }) => {
-    return todos.filter((todo) => {
+    return todos.filter(todo => {
       if (
         filters.search &&
         !todo.title.toLowerCase().includes(filters.search.toLowerCase()) &&
@@ -145,11 +305,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return false;
       }
       if (filters.tags && filters.tags.length > 0) {
-        if (!filters.tags.some((tag) => todo.tags.includes(tag))) {
+        if (!filters.tags.some(tag => todo.tags.includes(tag))) {
           return false;
         }
       }
-
       return true;
     });
   };
@@ -159,12 +318,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       value={{
         todos,
         user,
+        appState,
         addTodo,
         updateTodo,
         deleteTodo,
         toggleComplete,
         updateUser,
         filterTodos,
+        refreshTodos,
       }}
     >
       {children}

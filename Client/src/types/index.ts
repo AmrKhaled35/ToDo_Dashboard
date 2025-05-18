@@ -1,5 +1,5 @@
 export type Priority = 'low' | 'medium' | 'high';
-export type Category = 'work' | 'personal' | 'shopping' | 'health' | 'finance' | 'other';
+export type Category = 'Work' | 'Personal' | 'Shopping' | 'Health' | 'Finance' | 'Other';
 
 export interface Todo {
   id: string;
@@ -13,7 +13,10 @@ export interface Todo {
   tags: string[];
   userId: string;
 }
-
+export interface AppState {
+  isLoading: boolean;
+  error: string | null;
+}
 export interface User {
   id: string;
   name: string;

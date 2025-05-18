@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { LogIn } from 'lucide-react';
-
+import { useApp } from '../context/AppContext';
 const loginSchema = z.object({
   // email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -17,13 +17,14 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const { refreshTodos } = useApp();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       loginSchema.parse({ email, password });
       setLoading(true);
+      refreshTodos();
       await login(email, password);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -56,7 +57,6 @@ const Login: React.FC = () => {
               placeholder="Enter your Username"
               fullWidth
             />
-
             <Input
               label="Password"
               type="password"
@@ -65,7 +65,6 @@ const Login: React.FC = () => {
               placeholder="Enter your password"
               fullWidth
             />
-
             <Button
               type="submit"
               variant="primary"

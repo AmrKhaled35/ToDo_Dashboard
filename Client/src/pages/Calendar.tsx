@@ -11,12 +11,10 @@ const Calendar: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentTodo, setCurrentTodo] = useState<Todo | undefined>(undefined);
   const { todos, addTodo, updateTodo } = useApp();
-
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
   const daysInMonth = lastDayOfMonth.getDate();
   const startingDayOfWeek = firstDayOfMonth.getDay();
-
   const previousMonthDays = [];
   const previousMonthLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
   for (let i = startingDayOfWeek - 1; i >= 0; i--) {
@@ -29,13 +27,17 @@ const Calendar: React.FC = () => {
   for (let i = 1; i <= nextMonthDaysCount; i++) {
     nextMonthDays.push(i);
   }
-
+  console.log(todos);
   const todosByDate = groupTodosByDate(todos);
-
+  console.log(todosByDate);
   const getTodosForDate = (date: Date): Todo[] => {
-    const dateString = date.toISOString().split('T')[0];
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
     return todosByDate[dateString] || [];
   };
+  
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleAddTodo = (date: Date) => {
@@ -79,13 +81,13 @@ const Calendar: React.FC = () => {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white">Calendar</h2>
         <div className="flex items-center space-x-4">
-          <Button  className = "dark:text-white  dark:border-gray-700" variant="outline" size="sm" onClick={handlePreviousMonth} icon={<ChevronLeft size={16} />}>
+          <Button className="dark:text-white dark:border-gray-700" variant="outline" size="sm" onClick={handlePreviousMonth} icon={<ChevronLeft size={16} />}>
             Previous
           </Button>
           <span className="text-lg font-medium text-gray-800 dark:text-gray-100">
             {currentMonthName} {currentYear}
           </span>
-          <Button className = "dark:text-white  dark:border-gray-700" variant="outline" size="sm" onClick={handleNextMonth} icon={<ChevronRight size={16} />}>
+          <Button className="dark:text-white dark:border-gray-700" variant="outline" size="sm" onClick={handleNextMonth} icon={<ChevronRight size={16} />}>
             Next
           </Button>
         </div>
@@ -113,8 +115,9 @@ const Calendar: React.FC = () => {
           {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
             const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
             const isToday = new Date().toDateString() === date.toDateString();
+            console.log(date);
             const dayTodos = getTodosForDate(date);
-
+            console.log(dayTodos);
             return (
               <div
                 key={`current-${day}`}
@@ -135,24 +138,24 @@ const Calendar: React.FC = () => {
                   </span>
                 </div>
                 <div className="mt-1 space-y-1 overflow-y-auto max-h-24">
-                  {dayTodos.map((todo) => (
+                  {dayTodos.map((t: Todo) => (
                     <div
-                      key={todo.id}
+                      key={t.id}
                       className={`text-xs p-1 rounded truncate cursor-pointer ${
-                        todo.completed
+                        t.completed
                           ? 'bg-gray-100 text-gray-500 line-through dark:bg-gray-700 dark:text-gray-400'
-                          : todo.priority === 'high'
+                          : t.priority === 'high'
                           ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
-                          : todo.priority === 'medium'
+                          : t.priority === 'medium'
                           ? 'bg-amber-100 text-amber-800 dark:bg-amber-800 dark:text-amber-100'
                           : 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
                       }`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleEditTodo(todo);
+                        handleEditTodo(t);
                       }}
                     >
-                      {todo.title}
+                      {t.title}
                     </div>
                   ))}
                 </div>

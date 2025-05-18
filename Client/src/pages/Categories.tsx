@@ -8,27 +8,28 @@ import { Tag } from 'lucide-react';
 
 const Categories: React.FC = () => {
   const { todos, updateTodo } = useApp();
+  console.log(todos);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [currentTodo, setCurrentTodo] = React.useState<Todo | undefined>(undefined);
 
-  const categories: Category[] = ['work', 'personal', 'shopping', 'health', 'finance', 'other'];
+  const categories: Category[] = ['Work', 'Personal', 'Shopping', 'Health', 'Finance', 'Other'];
 
   const getCategoryIcon = (category: Category) => {
     let color;
     switch (category) {
-      case 'work':
+      case 'Work':
         color = 'text-blue-600 bg-blue-100 dark:bg-blue-800 dark:text-blue-200';
         break;
-      case 'personal':
+      case 'Personal':
         color = 'text-purple-600 bg-purple-100 dark:bg-purple-800 dark:text-purple-200';
         break;
-      case 'shopping':
+      case 'Shopping':
         color = 'text-emerald-600 bg-emerald-100 dark:bg-emerald-800 dark:text-emerald-200';
         break;
-      case 'health':
+      case 'Health':
         color = 'text-green-600 bg-green-100 dark:bg-green-800 dark:text-green-200';
         break;
-      case 'finance':
+      case 'Finance':
         color = 'text-amber-600 bg-amber-100 dark:bg-amber-800 dark:text-amber-200';
         break;
       default:
