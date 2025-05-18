@@ -41,6 +41,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
+      setUser(null);
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      
       const response = await fetch('https://omarawadsaber.pythonanywhere.com/api/token/', {
         method: 'POST',
         headers: {
@@ -56,9 +61,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const data = await response.json();
       console.log('Login Response:', data);
 
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('currentUser');
       localStorage.setItem('accessToken', data.access);
       localStorage.setItem('refreshToken', data.refresh);
 
@@ -83,7 +85,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       toast.success('Login successful!');
       navigate('/');
-      window.location.reload();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error('Login failed. Please check your email and password.');
@@ -132,6 +133,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('currentUser');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    
+    // Clear app data and notify components
     clearAppData();
 
     toast.success('Logged out successfully');

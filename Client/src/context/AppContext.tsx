@@ -49,6 +49,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [todos, setTodos] = useState<Todo[]>([]);
   const [user, setUser] = useLocalStorage<User>('user', defaultUser);
   const [appState, setAppState] = useState<AppState>(defaultAppState);
+  const [authToken, setAuthToken] = useState<string | null>(localStorage.getItem('accessToken'));
 
   const setLoading = (isLoading: boolean) => {
     setAppState(prev => ({ ...prev, isLoading }));
@@ -60,12 +61,39 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const getToken = () => localStorage.getItem('accessToken');
 
+  // Check for auth token changes
+  useEffect(() => {
+    const checkAuthToken = () => {
+      const currentToken = localStorage.getItem('accessToken');
+      if (currentToken !== authToken) {
+        setAuthToken(currentToken);
+        if (currentToken) {
+          setTodos([]);
+          refreshTodos();
+        }
+      }
+    };
+    checkAuthToken();    const handleAuthChange = () => {
+      console.log('Auth state changed, refreshing data');
+      setTodos([]);
+      checkAuthToken();
+    };
+
+    window.addEventListener('authStateChanged', handleAuthChange);
+    return () => {
+      window.removeEventListener('authStateChanged', handleAuthChange);
+    };
+  }, [authToken]);
+
   const refreshTodos = useCallback(async () => {
     setLoading(true);
     try {
       const token = getToken();
-      console.log(token);
-      if (!token) throw new Error('No access token found');
+      console.log('Refreshing todos with token:', token);
+      if (!token) {
+        setTodos([]);
+        throw new Error('No access token found');
+      }
 
       const response = await fetch(API_URL, {
         headers: {
@@ -93,8 +121,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, []);
 
   useEffect(() => {
-    refreshTodos();
-  }, [refreshTodos]);
+    if (authToken) {
+      refreshTodos();
+    } else {
+      setTodos([]);
+    }
+  }, [refreshTodos, authToken]);
 
   const addTodo = async (todo: Omit<Todo, 'id' | 'createdAt'>) => {
     setLoading(true);
