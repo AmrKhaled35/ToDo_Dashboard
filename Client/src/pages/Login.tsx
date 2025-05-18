@@ -20,20 +20,28 @@ const Login: React.FC = () => {
   const { refreshTodos } = useApp();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       loginSchema.parse({ email, password });
-      setLoading(true);
-      refreshTodos();
-      await login(email, password);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('currentUser');
+      if (!localStorage.getItem('accessToken') && !localStorage.getItem('currentUser')) {
+        setLoading(true);
+        refreshTodos();
+        await login(email, password);
+      } else {
+        toast.error('Failed to clear local storage before login.');
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         error.errors.forEach((err) => toast.error(err.message));
+      } else {
+        toast.error('Unexpected error occurred.');
       }
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
