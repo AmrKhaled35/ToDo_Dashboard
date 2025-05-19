@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { Search, Bell, Menu, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useUser } from '../../context/UserContext';
 import Button from '../ui/Button';
 
 interface HeaderProps {
@@ -9,7 +10,8 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const {logout } = useAuth();
+  const { ser } = useUser();
 
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -66,12 +68,12 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
           <div className="flex items-center space-x-4">
             <div className="flex items-center">
               <img
-                src={user?.avatar}
-                alt={user?.name}
+                src={ser?.profilePhoto}
+                alt={ser?.username}
                 className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600"
               />
               <span className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300 hidden md:block">
-                {user?.name}
+                {ser?.username}
               </span>
             </div>
 

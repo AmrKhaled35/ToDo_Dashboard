@@ -11,7 +11,8 @@ import {
   // BotIcon
 } from 'lucide-react';
 
-import { useAuth } from '../../context/AuthContext';
+// import { useAuth } from '../../context/AuthContext';
+import  {useUser} from '../../context/UserContext';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -19,7 +20,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
-  const { user } = useAuth();
+  const { ser } = useUser();
   const navigationItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { path: '/tasks', label: 'Tasks', icon: <CheckSquare size={20} /> },
@@ -56,13 +57,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
         <div className="flex flex-col p-4">
           <div className="flex items-center space-x-3 mb-6">
             <img
-              src={user?.avatar}
-              alt={user?.name}
+              src={ser?.profilePhoto}
+              alt={ser?.username}
               className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500"
             />
             <div>
-              <h2 className="font-medium text-gray-900 dark:text-white">{user?.name}</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
+              <h2 className="font-medium text-gray-900 dark:text-white">{ser?.username}</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{ser?.email}</p>
             </div>
           </div>
 

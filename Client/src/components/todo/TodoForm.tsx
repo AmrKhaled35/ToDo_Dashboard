@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import { X } from 'lucide-react';
 import { Todo, Category, Priority } from '../../types';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
 import Button from '../ui/Button';
 import { formatDateForInput } from '../../utils/helpers';
+import toast from 'react-hot-toast'; 
 
 interface TodoFormProps {
   todo?: Todo;
@@ -22,7 +23,6 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
   const [category, setCategory] = useState<Category>(todo?.category || 'personal');
   const [tags, setTags] = useState<string[]>(todo?.tags || []);
   const [tagInput, setTagInput] = useState('');
-  const [titleError, setTitleError] = useState('');
 
   const priorityOptions = [
     { value: 'low', label: 'Low' },
@@ -39,20 +39,48 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
     { value: 'other', label: 'Other' },
   ];
 
-  useEffect(() => {
-    if (title.trim()) {
-      setTitleError('');
-    }
-  }, [title]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!title.trim()) {
-      setTitleError('Title is required');
+      toast.error('Title is required');
       return;
     }
-
+  
+    if (!dueDate) {
+      toast.error('Due Date is required');
+      return;
+    }
+  
+    if (!description.trim()) {
+      toast.error('Description is required');
+      return;
+    }
+  
+    if (!priority) {
+      toast.error('Priority is required');
+      return;
+    }
+  
+    if (!category) {
+      toast.error('Category is required');
+      return;
+    }
+    
+    if (tags.length === 0) {
+      toast.error('Please add at least one tag');
+      return;
+    }
+  
+    const selectedDate = new Date(dueDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+  
+    if (selectedDate < today) {
+      toast.error('Due date cannot be in the past');
+      return;
+    }
+  
     onSubmit({
       title: title.trim(),
       description: description.trim(),
@@ -63,7 +91,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
       completed: todo?.completed || false,
     });
   };
-
+  
   const handleAddTag = () => {
     const trimmedTag = tagInput.trim().toLowerCase();
     if (trimmedTag && !tags.includes(trimmedTag)) {
@@ -90,7 +118,6 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Task title"
-        error={titleError}
         fullWidth
         autoFocus
         className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
@@ -103,7 +130,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ todo, onSubmit, onCancel }) => {
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Task description (optional)"
+          placeholder="Task description"
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-indigo-400 dark:focus:border-indigo-400"
           rows={3}
         />
