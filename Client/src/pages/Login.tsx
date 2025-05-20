@@ -7,6 +7,7 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { LogIn } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useUser } from '../context/UserContext';
 const loginSchema = z.object({
   // email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -14,6 +15,7 @@ const loginSchema = z.object({
 
 const Login: React.FC = () => {
   const { login } = useAuth();
+  const { fetchUser } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,6 +30,7 @@ const Login: React.FC = () => {
         setLoading(true);
         refreshTodos();
         await login(email, password);
+        fetchUser();
       } else {
         toast.error('Failed to clear local storage before login.');
       }

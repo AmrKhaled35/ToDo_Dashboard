@@ -117,17 +117,12 @@ const Canvas = forwardRef<
   }, [currentColor, penSize, activeTool]);
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    e.preventDefault(); // Prevent scrolling when drawing on touch devices
-    
+    e.preventDefault(); 
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
     const context = canvas.getContext('2d');
     if (!context) return;
-    
     const point = getCoordinates(e);
-    
-    // Store start point for shapes
     startPointRef.current = point;
     
     if (activeTool === 'text') {
@@ -137,8 +132,6 @@ const Canvas = forwardRef<
     
     setIsDrawing(true);
     lastPointRef.current = point;
-    
-    // For single dots (when clicking without dragging)
     if (activeTool === 'pen') {
       context.strokeStyle = currentColor;
       context.fillStyle = currentColor;
@@ -156,24 +149,17 @@ const Canvas = forwardRef<
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    e.preventDefault(); // Prevent scrolling when drawing on touch devices
-    
+    e.preventDefault();
     if (!isDrawing) return;
-    
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
     const context = canvas.getContext('2d');
     if (!context) return;
-    
     const currentPoint = getCoordinates(e);
-    
-    // Handle different tools
     if (activeTool === 'pen') {
       context.strokeStyle = currentColor;
       context.lineWidth = penSize;
       context.globalCompositeOperation = 'source-over';
-      
       if (lastPointRef.current) {
         context.beginPath();
         context.moveTo(lastPointRef.current.x, lastPointRef.current.y);
@@ -191,15 +177,12 @@ const Canvas = forwardRef<
         context.stroke();
       }
     } else if (activeTool === 'rectangle' && startPointRef.current) {
-      // For live preview of rectangle, we need to clear and redraw
       const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.putImageData(imageData, 0, 0);
-      
       context.strokeStyle = currentColor;
       context.lineWidth = penSize;
       context.globalCompositeOperation = 'source-over';
-      
       drawRectangle(
         context,
         startPointRef.current.x,
@@ -208,16 +191,13 @@ const Canvas = forwardRef<
         currentPoint.y
       );
     } else if (activeTool === 'arrow' && startPointRef.current) {
-      // For live preview of arrow, we need to clear and redraw
       const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.putImageData(imageData, 0, 0);
-      
       context.strokeStyle = currentColor;
       context.fillStyle = currentColor;
       context.lineWidth = penSize;
       context.globalCompositeOperation = 'source-over';
-      
       drawArrow(
         context,
         startPointRef.current.x,
@@ -233,34 +213,25 @@ const Canvas = forwardRef<
 
   const stopDrawing = () => {
     if (!isDrawing) return;
-    
     setIsDrawing(false);
     lastPointRef.current = null;
     startPointRef.current = null;
-    
-    // Reset composite operation
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
     const context = canvas.getContext('2d');
     if (!context) return;
-    
     context.globalCompositeOperation = 'source-over';
   };
 
   const getCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>): Point => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
-    
     const rect = canvas.getBoundingClientRect();
     let clientX, clientY;
-    
     if ('touches' in e) {
-      // Touch event
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     } else {
-      // Mouse event
       clientX = e.clientX;
       clientY = e.clientY;
     }
