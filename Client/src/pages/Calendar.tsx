@@ -85,8 +85,8 @@ const Calendar: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-gray-800 dark:text-white">Calendar</h2>
-        <div className="flex items-center space-x-4">
+        <h2 className="text-xl hidden sm:block  font-bold text-gray-800 dark:text-white">Calendar</h2>
+        <div className="flex items-center space-x-3">
           <Button
             className="dark:text-white dark:border-gray-700"
             variant="outline"
@@ -97,7 +97,7 @@ const Calendar: React.FC = () => {
             Previous
           </Button>
 
-          <span className="text-lg font-medium text-gray-800 dark:text-gray-100">
+          <span className="hide-under-425 text-lg font-medium text-gray-800 dark:text-gray-100">
             {currentMonthName} {currentYear}
           </span>
 
@@ -112,7 +112,7 @@ const Calendar: React.FC = () => {
           </Button>
 
           <Button
-            className="dark:text-white dark:border-gray-700"
+            className="dark:text-white dark:border-gray-700 "
             variant="outline"
             size="sm"
             onClick={handelSpeek}
