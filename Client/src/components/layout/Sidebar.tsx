@@ -9,6 +9,8 @@ import {
   Menu,
   X,
   // BotIcon
+  // Map
+  PenTool
 } from 'lucide-react';
 
 // import { useAuth } from '../../context/AuthContext';
@@ -27,6 +29,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
     { path: '/calendar', label: 'Calendar', icon: <Calendar size={20} /> },
     { path: '/categories', label: 'Categories', icon: <Tag size={20} /> },
     // { path: '/ask-gpt', label: 'Ask GPT', icon: <BotIcon size={20} /> },
+    // { path: '/roadmap', label: 'Roadmap', icon: <Map size={20} /> },
+    { path: '/sketchpad', label: 'Sketchpad', icon: <PenTool size={20} /> },
     { path: '/profile', label: 'Profile', icon: <User size={20} /> },
     { path: '/settings', label: 'Settings', icon: <Settings size={20} /> },
   ];

@@ -36,3 +36,22 @@ export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
 }
+
+export interface Milestone {
+  id: string;
+  title: string;
+  description: string;
+  dueDate: string;
+  completed: boolean;
+  tasks: Todo[];
+  color: string;
+}
+
+export interface Roadmap {
+  id: string;
+  title: string;
+  description: string;
+  milestones: Milestone[];
+  createdAt: string;
+  updatedAt: string;
+}

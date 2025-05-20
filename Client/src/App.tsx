@@ -20,6 +20,8 @@ import Settings from "./pages/Settings";
 import { useAuth } from "./context/AuthContext";
 import { UserProvider } from "./context/UserContext";
 // import AskGpt from './pages/AskGpt';
+// import Roadmap from "./pages/Roadmap";
+import Sketchpad from './pages/Sketchpad';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -58,6 +60,8 @@ const AppContent: React.FC = () => {
             <Route path="calendar" element={<Calendar />} />
             <Route path="categories" element={<Categories />} />
             {/* <Route path="ask-gpt" element={<AskGpt />} /> */}
+            {/* <Route path="roadmap" element={<Roadmap />} /> */}
+            <Route path="sketchpad" element={<Sketchpad />} />
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
           </Route>
