@@ -96,10 +96,10 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onEdit }) => {
               {todo.category.charAt(0).toUpperCase() + todo.category.slice(1)}
             </Badge>
 
-            {todo.dueDate && (
+            {todo.due_date && (
               <Badge variant="outline" className="text-gray-600 bg-gray-50 dark:text-gray-300 dark:bg-gray-700">
                 <Calendar size={12} className="mr-1" />
-                {formatDate(todo.dueDate)}
+                {formatDate(todo.due_date)}
               </Badge>
             )}
           </div>

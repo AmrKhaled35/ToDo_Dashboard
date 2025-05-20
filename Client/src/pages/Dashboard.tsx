@@ -120,7 +120,7 @@ const Dashboard: React.FC = () => {
               <TodoList
                 title=""
                 showAddButton={false}
-                filter={{ completed: false }}
+                filter={{}}
               />
             </CardContent>
           </Card>

@@ -35,7 +35,7 @@ export const getRelativeTime = (dateString: string): string => {
 };
 export const calculateStats = (todos: Todo[]) => {
   const total = todos.length;
-  const completed = todos.filter((todo) => todo.completed).length;
+  const completed = todos.filter((todo) => todo.isCompleted).length;
   const pending = total - completed;
   const completionRate = total > 0 ? (completed / total) * 100 : 0;
 
@@ -50,8 +50,8 @@ export const calculateStats = (todos: Todo[]) => {
   }, {} as Record<Priority, number>);
 
   const dueToday = todos.filter((todo) => {
-    if (!todo.dueDate) return false;
-    const dueDate = new Date(todo.dueDate);
+    if (!todo.due_date) return false;
+    const dueDate = new Date(todo.due_date);
     const today = new Date();
     return (
       dueDate.getDate() === today.getDate() &&
@@ -61,8 +61,8 @@ export const calculateStats = (todos: Todo[]) => {
   }).length;
 
   const overdue = todos.filter((todo) => {
-    if (!todo.dueDate || todo.completed) return false;
-    const dueDate = new Date(todo.dueDate);
+    if (!todo.due_date || todo.isCompleted) return false;
+    const dueDate = new Date(todo.due_date);
     const today = new Date();
     return dueDate < today;
   }).length;

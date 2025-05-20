@@ -34,6 +34,7 @@ const TodoList: React.FC<TodoListProps> = ({
   const [completedFilter, setCompletedFilter] = useState<string>(
     filter.completed !== undefined ? String(filter.completed) : ''
   );
+  console.log(todos)
 
   const handleOpenModal = () => {
     setCurrentTodo(undefined);
