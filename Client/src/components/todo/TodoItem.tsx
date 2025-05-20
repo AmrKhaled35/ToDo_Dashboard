@@ -4,6 +4,7 @@ import { Todo } from '../../types';
 import { formatDate, getPriorityColor, getCategoryColor } from '../../utils/helpers';
 import { useApp } from '../../context/AppContext';
 import Badge from '../ui/Badge';
+import Tin from '../../sounds/Tin.wav'
 
 interface TodoItemProps {
   todo: Todo;
@@ -16,6 +17,8 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onEdit }) => {
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
+    const audio = new Audio(Tin); 
+    audio.play();
     toggleComplete(todo.id);
   };
 
