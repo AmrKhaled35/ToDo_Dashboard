@@ -8,6 +8,7 @@ import Button from '../components/ui/Button';
 import { LogIn } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useUser } from '../context/UserContext';
+import WelcomeSound from '../sounds/Welcome2.mp3'
 const loginSchema = z.object({
   // email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -20,6 +21,30 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { refreshTodos } = useApp();
+  // const speak = (text: string) => {
+  //   const synth = window.speechSynthesis;
+  
+  //   const speakWithFemaleVoice = () => {
+  //     const voices = synth.getVoices();
+  //     const femaleVoice =
+  //       voices.find((v) => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('woman')) ||
+  //       voices.find((v) => v.lang === 'en-US' && v.name.toLowerCase().includes('zira')) || 
+  //       voices.find((v) => v.lang === 'en-US' && v.name.toLowerCase().includes('female'));
+  //     const utterance = new SpeechSynthesisUtterance(text);
+  //     utterance.voice = femaleVoice || voices[0];
+  //     utterance.lang = 'en-US';
+  //     utterance.rate = 1;
+  //     utterance.pitch = 1.1;
+  
+  //     synth.speak(utterance);
+  //   };
+  //   if (synth.getVoices().length === 0) {
+  //     synth.onvoiceschanged = speakWithFemaleVoice;
+  //   } else {
+  //     speakWithFemaleVoice();
+  //   }
+  // };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -31,6 +56,9 @@ const Login: React.FC = () => {
         refreshTodos();
         await login(email, password);
         fetchUser();
+        // speak('Welcome to ala ma tofrag');
+          const audio = new Audio(WelcomeSound);
+          audio.play().catch(err => console.warn("Autoplay blocked:", err));
       } else {
         toast.error('Failed to clear local storage before login.');
       }

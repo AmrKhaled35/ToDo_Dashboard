@@ -4,7 +4,8 @@ import { Category, Todo } from '../types';
 import Card, { CardHeader, CardContent } from '../components/ui/Card';
 import TodoItem from '../components/todo/TodoItem';
 import TodoModal from '../components/todo/TodoModal';
-import { Tag } from 'lucide-react';
+import { Tag, Speaker } from 'lucide-react';  
+import CategorySound from '../sounds/Category.mp3'
 
 const Categories: React.FC = () => {
   const { todos, updateTodo } = useApp();
@@ -13,6 +14,11 @@ const Categories: React.FC = () => {
   const [currentTodo, setCurrentTodo] = React.useState<Todo | undefined>(undefined);
 
   const categories: Category[] = ['Work', 'Personal', 'Shopping', 'Health', 'Finance', 'Other'];
+
+  const handelSpeek = () => {
+    const audio = new Audio(CategorySound);
+    audio.play();
+  }
 
   const getCategoryIcon = (category: Category) => {
     let color;
@@ -66,7 +72,16 @@ const Categories: React.FC = () => {
 
   return (
     <div className="space-y-6 bg-gray-50 dark:bg-gray-900 p-4 min-h-screen transition-colors duration-300">
-      <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Categories</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Categories</h2>
+        <button
+          onClick={handelSpeek}
+          aria-label="Play sound"
+          className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+        >
+          <Speaker size={24} className="text-gray-700 dark:text-gray-300" />
+        </button>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categories.map((category) => {
@@ -112,7 +127,6 @@ const Categories: React.FC = () => {
       />
     </div>
   );
-  
 };
 
 export default Categories;

@@ -5,12 +5,13 @@ import {
   ListChecks,
   CalendarCheck,
 } from 'lucide-react';
+// import { useEffect } from 'react';
 import TodoList from '../components/todo/TodoList';
 import StatCard from '../components/dashboard/StatCard';
 import Card, { CardHeader, CardContent } from '../components/ui/Card';
 import { useApp } from '../context/AppContext';
 import { calculateStats } from '../utils/helpers';
-
+// import WelcomeSound from  '../sounds/welcome.mp3';
 const Dashboard: React.FC = () => {
   const { todos } = useApp();
   const stats = calculateStats(todos);

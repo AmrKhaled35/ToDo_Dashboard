@@ -1,16 +1,18 @@
-import  { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
 import Button from '../components/ui/Button';
-import TodoModal from '../components/todo/TodoModal';
+// import TodoModal from '../components/todo/TodoModal';
 import { useApp } from '../context/AppContext';
 import { groupTodosByDate } from '../utils/helpers';
 import { Todo } from '../types';
+import CalenderSound from '../sounds/Calendar.mp3';
 
 const Calendar: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentTodo, setCurrentTodo] = useState<Todo | undefined>(undefined);
   const { todos, addTodo, updateTodo } = useApp();
+
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
   const daysInMonth = lastDayOfMonth.getDate();
@@ -27,9 +29,9 @@ const Calendar: React.FC = () => {
   for (let i = 1; i <= nextMonthDaysCount; i++) {
     nextMonthDays.push(i);
   }
-  console.log(todos);
+
   const todosByDate = groupTodosByDate(todos);
-  console.log(todosByDate);
+
   const getTodosForDate = (date: Date): Todo[] => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -37,7 +39,11 @@ const Calendar: React.FC = () => {
     const dateString = `${year}-${month}-${day}`;
     return todosByDate[dateString] || [];
   };
-  
+
+  const handelSpeek = () => {
+    const audio = new Audio(CalenderSound);
+    audio.play().catch(err => console.warn("Autoplay blocked:", err));
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleAddTodo = (date: Date) => {
@@ -81,14 +87,38 @@ const Calendar: React.FC = () => {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white">Calendar</h2>
         <div className="flex items-center space-x-4">
-          <Button className="dark:text-white dark:border-gray-700" variant="outline" size="sm" onClick={handlePreviousMonth} icon={<ChevronLeft size={16} />}>
+          <Button
+            className="dark:text-white dark:border-gray-700"
+            variant="outline"
+            size="sm"
+            onClick={handlePreviousMonth}
+            icon={<ChevronLeft size={16} />}
+          >
             Previous
           </Button>
+
           <span className="text-lg font-medium text-gray-800 dark:text-gray-100">
             {currentMonthName} {currentYear}
           </span>
-          <Button className="dark:text-white dark:border-gray-700" variant="outline" size="sm" onClick={handleNextMonth} icon={<ChevronRight size={16} />}>
+
+          <Button
+            className="dark:text-white dark:border-gray-700"
+            variant="outline"
+            size="sm"
+            onClick={handleNextMonth}
+            icon={<ChevronRight size={16} />}
+          >
             Next
+          </Button>
+
+          <Button
+            className="dark:text-white dark:border-gray-700"
+            variant="outline"
+            size="sm"
+            onClick={handelSpeek}
+            icon={<Volume2 size={16} />}
+          >
+            Sound
           </Button>
         </div>
       </div>
@@ -115,9 +145,8 @@ const Calendar: React.FC = () => {
           {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
             const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
             const isToday = new Date().toDateString() === date.toDateString();
-            console.log(date);
             const dayTodos = getTodosForDate(date);
-            console.log(dayTodos);
+
             return (
               <div
                 key={`current-${day}`}

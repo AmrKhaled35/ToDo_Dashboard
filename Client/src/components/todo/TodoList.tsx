@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Search, Filter } from 'lucide-react';
+import { Plus, Search, Filter, Volume2 } from 'lucide-react';
 import { Todo, Category, Priority } from '../../types';
 import TodoItem from './TodoItem';
 import TodoModal from './TodoModal';
@@ -7,6 +7,7 @@ import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
 import { useApp } from '../../context/AppContext';
+import TaskSound from '../../sounds/Tasks.mp3';
 
 interface TodoListProps {
   title?: string;
@@ -34,11 +35,15 @@ const TodoList: React.FC<TodoListProps> = ({
   const [completedFilter, setCompletedFilter] = useState<string>(
     filter.completed !== undefined ? String(filter.completed) : ''
   );
-  console.log(todos)
 
   const handleOpenModal = () => {
     setCurrentTodo(undefined);
     setIsModalOpen(true);
+  };
+
+  const handelSpeek = () => {
+    const audio = new Audio(TaskSound);
+    audio.play();
   };
 
   const handleEditTodo = (todo: Todo) => {
@@ -94,7 +99,14 @@ const TodoList: React.FC<TodoListProps> = ({
     <div className="space-y-4 dark:bg-gray-900 dark:text-white">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white">{title}</h2>
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 items-center">
+          <button
+            onClick={handelSpeek}
+            className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+            aria-label="Play sound"
+          >
+            <Volume2 size={20} className="text-gray-800 dark:text-white" />
+          </button>
           <Button
             variant="outline"
             size="sm"
