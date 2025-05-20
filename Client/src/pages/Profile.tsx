@@ -5,7 +5,8 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { useAuth } from '../context/AuthContext';
 import { useUser } from '../context/UserContext';
-
+import { z } from 'zod';
+import toast from 'react-hot-toast';
 const Profile: React.FC = () => {
   const { ser, updateUser } = useUser();
   const { user } = useAuth();
@@ -16,7 +17,11 @@ const Profile: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dropRef = useRef<HTMLDivElement>(null);
-
+  const profileSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters'),
+    email: z.string().email('Invalid email address'),
+  });
+  
   useEffect(() => {
     if (ser) {
       setName(ser.username);
@@ -36,22 +41,33 @@ const Profile: React.FC = () => {
   ];
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!name || !email) return;
-
+  
+    try {
+      profileSchema.parse({ name, email }); 
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        error.errors.forEach((err) => toast.error(err.message));
+      } else {
+        toast.error('Something went wrong during validation.');
+      }
+      return;
+    }
+  
     const formData = new FormData();
     formData.append('username', name);
     formData.append('email', email);
-
+  
     if (selectedFile) {
       formData.append('profilePhoto', selectedFile);
     } else if (previewAvatar) {
       formData.append('profilePhotoUrl', previewAvatar);
     }
-
+  
     updateUser(formData);
+    toast.success('Profile updated successfully!'); 
     setIsEditing(false);
   };
+  
 
   const cancelEditing = () => {
     setName(user?.name || '');
