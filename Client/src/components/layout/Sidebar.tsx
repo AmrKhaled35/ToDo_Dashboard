@@ -10,6 +10,7 @@ import {
   X,
   // BotIcon
   // Map
+  // StickyNote,
   PenTool
 } from 'lucide-react';
 
@@ -30,6 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
     { path: '/categories', label: 'Categories', icon: <Tag size={20} /> },
     // { path: '/ask-gpt', label: 'Ask GPT', icon: <BotIcon size={20} /> },
     // { path: '/roadmap', label: 'Roadmap', icon: <Map size={20} /> },
+    // { path: '/notes', label: 'My Notes', icon: <StickyNote size={20} /> },
     { path: '/sketchpad', label: 'Sketchpad', icon: <PenTool size={20} /> },
     { path: '/profile', label: 'Profile', icon: <User size={20} /> },
     { path: '/settings', label: 'Settings', icon: <Settings size={20} /> },

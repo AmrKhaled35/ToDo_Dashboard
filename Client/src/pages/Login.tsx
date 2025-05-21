@@ -8,7 +8,6 @@ import Button from '../components/ui/Button';
 import { LogIn } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useUser } from '../context/UserContext';
-import WelcomeSound from '../sounds/Welcome2.mp3'
 const loginSchema = z.object({
   // email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -57,8 +56,6 @@ const Login: React.FC = () => {
         await login(email, password);
         fetchUser();
         // speak('Welcome to ala ma tofrag');
-          const audio = new Audio(WelcomeSound);
-          audio.play().catch(err => console.warn("Autoplay blocked:", err));
       } else {
         toast.error('Failed to clear local storage before login.');
       }

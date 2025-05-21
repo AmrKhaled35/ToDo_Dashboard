@@ -19,6 +19,7 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import { useAuth } from "./context/AuthContext";
 import { UserProvider } from "./context/UserContext";
+// import Notes from './pages/Notes';
 // import AskGpt from './pages/AskGpt';
 // import Roadmap from "./pages/Roadmap";
 import Sketchpad from './pages/Sketchpad';
@@ -62,6 +63,7 @@ const AppContent: React.FC = () => {
             {/* <Route path="ask-gpt" element={<AskGpt />} /> */}
             {/* <Route path="roadmap" element={<Roadmap />} /> */}
             <Route path="sketchpad" element={<Sketchpad />} />
+            {/* <Route path="notes" element={<Notes />} /> */}
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
           </Route>

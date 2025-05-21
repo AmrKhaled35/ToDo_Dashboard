@@ -16,7 +16,7 @@ const Layout: React.FC = () => {
 
       <div className="flex-1 lg:ml-64">
         <Header toggleSidebar={toggleSidebar} />
-        <main className="p-4 md:p-6 max-w-7xl mx-auto">
+        <main className=" relative p-4 md:p-6 max-w-7xl mx-auto">
           <Outlet />
         </main>
       </div>

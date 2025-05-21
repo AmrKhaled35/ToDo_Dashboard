@@ -134,7 +134,7 @@ const Profile: React.FC = () => {
                   alt={ser?.username}
                   className="w-32 h-32 rounded-full object-cover border-4 border-indigo-200"
                 />
-                <input
+                <Input
                   type="file"
                   accept="image/*"
                   ref={fileInputRef}

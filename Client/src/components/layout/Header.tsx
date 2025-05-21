@@ -29,6 +29,8 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         return 'Profile';
       case '/settings':
         return 'Settings';
+      case '/notes':
+        return 'My Notes';
       default:
         return '3la Ma Tofrag';
     }
