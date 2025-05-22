@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { User } from '../types';
 import toast from 'react-hot-toast';
 import WelcomeSound from '../sounds/Welcome2.mp3'
-import AlAsad from '../sounds/الاسد.ogg'
+// import AlAsad from '../sounds/الاسد.ogg'
 
 interface AuthContextType {
   user: User | null;
@@ -87,7 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       toast.success('Login successful!');
       navigate('/');
-      const audio = new Audio(AlAsad);
+      const audio = new Audio(WelcomeSound);
       audio.play().catch(err => console.warn("Autoplay blocked:", err));
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
